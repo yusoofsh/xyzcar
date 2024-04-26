@@ -1,6 +1,5 @@
 import { Breadcrumbs } from "@/lib/components/products/breadcrumbs";
 import { InvoiceAddForm } from "@/lib/components/products/create-form";
-import { fetchCustomers } from "@/lib/utils/data";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -8,8 +7,6 @@ export const metadata: Metadata = {
 };
 
 const InvoiceCreatePage = async () => {
-  const customers = await fetchCustomers();
-
   return (
     <main>
       <Breadcrumbs
@@ -22,7 +19,7 @@ const InvoiceCreatePage = async () => {
           },
         ]}
       />
-      <InvoiceAddForm customers={customers} />
+      <InvoiceAddForm />
     </main>
   );
 };

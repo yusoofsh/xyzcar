@@ -6,17 +6,14 @@ import { z } from "zod";
 
 const FormSchema = z.object({
   id: z.string(),
-  customerId: z.string({ required_error: "Please select a customer." }),
-  amount: z.coerce
-    .number()
-    .gt(0, { message: "Please enter an amount greater than $0." }),
-  status: z.enum(["pending", "paid"], {
-    required_error: "Please select an invoice status.",
-  }),
-  date: z.string(),
+  merek: z.string(),
+  jenis: z.string(),
+  jumlah_stok: z.string(),
+  harga: z.string(),
+  keterangan: z.string(),
 });
-const CreateInvoice = FormSchema.omit({ id: true, date: true });
-const UpdateInvoice = FormSchema.omit({ id: true, date: true });
+const CreateInvoice = FormSchema.omit({ id: true });
+const UpdateInvoice = FormSchema.omit({ id: true });
 
 export type State = {
   errors?: {
@@ -38,14 +35,12 @@ export async function createInvoice(_state: State, formData: FormData) {
     };
   }
 
-  const { customerId, amount, status } = validatedFields.data;
-  const amountInCents = amount * 100;
-  const date = new Date().toISOString().split("T")[0];
+  const { merek, jenis, jumlah_stok, harga, keterangan } = validatedFields.data;
 
   try {
     await sql`
-      INSERT INTO invoices (customer_id, amount, status, date)
-      VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
+      INSERT INTO invoices (merek, jenis, jumlah_stok, harga, keterangan)
+      VALUES (${merek}, ${jenis}, ${jumlah_stok}, ${harga}, ${keterangan})
     `;
   } catch (error) {
     return {
@@ -71,23 +66,26 @@ export async function updateInvoice(
     };
   }
 
-  const { customerId, amount, status } = validatedFields.data;
-  const amountInCents = amount * 100;
+  const { merek, jenis, jumlah_stok, harga, keterangan } = validatedFields.data;
 
   try {
     await sql`
     UPDATE invoices
-    SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+    SET  merek = ${merek}, jenis = ${jenis}, jumlah_stok = ${jumlah_stok}, harga = ${harga}, keterangan = ${keterangan}
     WHERE id = ${id}
   `;
   } catch (error) {
     return { message: "Database error: Failed to update invoice." };
   }
 
-  revalidatePath("/dashboard/invoices");
-  redirect("/dashboard/invoices");
+  revalidatePath("/dashboard");
+  redirect("/dashboard");
 }
 
 export async function deleteInvoice(_id: string) {
-  throw new Error("Failed to delete invoice");
+  await sql`
+  DELETE FROM invoices
+  WHERE id = ${_id}`;
+  revalidatePath("/dashboard");
+  redirect("/dashboard");
 }
