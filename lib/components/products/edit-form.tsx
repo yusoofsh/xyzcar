@@ -103,24 +103,6 @@ export const InvoiceEditForm = async ({ invoice }: { invoice: any }) => {
             </div>
           </div>
         </div>
-        {/* Invoice Amount */}
-        <div className="mb-4">
-          <label className="mb-2 block text-sm font-medium" htmlFor="amount">
-            Merek
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                defaultValue={invoice.merek}
-                id="merek"
-                name="merek"
-                placeholder="Masukkan merek"
-                type="text"
-              />
-            </div>
-          </div>
-        </div>
       </div>
       <div className="mt-6 flex justify-end gap-4">
         <Link
