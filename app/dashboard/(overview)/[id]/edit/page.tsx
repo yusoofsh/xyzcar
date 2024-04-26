@@ -1,6 +1,6 @@
 import { Breadcrumbs } from "@/lib/components/products/breadcrumbs";
 import { InvoiceEditForm } from "@/lib/components/products/edit-form";
-import { fetchCustomers, fetchInvoiceById } from "@/lib/utils/data";
+import { fetchInvoiceById } from "@/lib/utils/data";
 import { notFound } from "next/navigation";
 
 import { Metadata } from "next";
@@ -11,10 +11,7 @@ export const metadata: Metadata = {
 
 const InvoiceEditPage = async ({ params }: { params: { id: string } }) => {
   const id = params.id;
-  const [invoice, customers] = await Promise.all([
-    fetchInvoiceById(id),
-    fetchCustomers(),
-  ]);
+  const [invoice] = await Promise.all([fetchInvoiceById(id)]);
 
   if (!invoice) {
     notFound();
@@ -32,7 +29,7 @@ const InvoiceEditPage = async ({ params }: { params: { id: string } }) => {
           },
         ]}
       />
-      <InvoiceEditForm invoice={invoice} customers={customers} />
+      <InvoiceEditForm invoice={invoice} />
     </>
   );
 };

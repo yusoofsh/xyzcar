@@ -1,8 +1,6 @@
 import {
   formatCurrency,
-  type CustomerField,
   type CustomersTable,
-  type InvoiceForm,
   type Revenue,
   type User,
 } from "@/lib/utils";
@@ -95,34 +93,18 @@ export async function fetchInvoicesPages(query: string) {
 }
 
 export async function fetchInvoiceById(id: string) {
-  const invoiceData = await executeQuery<InvoiceForm>`
+  const invoiceData = await executeQuery<any>`
     SELECT
-      invoices.id,
-      invoices.customer_id,
-      invoices.amount,
-      invoices.status
+      *
     FROM invoices
     WHERE invoices.id = ${id};
   `;
 
   const invoice = invoiceData.map((invoice) => ({
     ...invoice,
-    amount: invoice.amount / 100,
   }));
 
   return invoice[0];
-}
-
-export async function fetchCustomers() {
-  const customersData = await executeQuery<CustomerField>`
-    SELECT
-      id,
-      name
-    FROM customers
-    ORDER BY name ASC
-  `;
-
-  return customersData;
 }
 
 export async function fetchFilteredCustomers(query: string) {
