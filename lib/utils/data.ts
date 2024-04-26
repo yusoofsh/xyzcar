@@ -77,8 +77,9 @@ export async function fetchFilteredInvoices(
 
   const invoicesData = await executeQuery<any>`
   SELECT * FROM invoices
+  WHERE
+  invoices.merek ILIKE ${`%${query}%`};
   `;
-  console.log(invoicesData, "hehe");
 
   return invoicesData;
 }
