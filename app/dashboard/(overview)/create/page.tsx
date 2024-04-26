@@ -1,10 +1,10 @@
-import { Breadcrumbs } from "@/lib/components/invoices/breadcrumbs";
-import { InvoiceAddForm } from "@/lib/components/invoices/create-form";
+import { Breadcrumbs } from "@/lib/components/products/breadcrumbs";
+import { InvoiceAddForm } from "@/lib/components/products/create-form";
 import { fetchCustomers } from "@/lib/utils/data";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Create Invoice"
+  title: "Create Product",
 };
 
 const InvoiceCreatePage = async () => {
@@ -14,12 +14,12 @@ const InvoiceCreatePage = async () => {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: "Invoices", href: "/dashboard/invoices" },
+          { label: "Products", href: "/dashboard" },
           {
-            label: "Create Invoice",
-            href: "/dashboard/invoices/create",
-            active: true
-          }
+            label: "Create Product",
+            href: "/dashboard/create",
+            active: true,
+          },
         ]}
       />
       <InvoiceAddForm customers={customers} />

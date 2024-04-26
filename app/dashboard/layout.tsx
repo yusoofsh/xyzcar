@@ -1,8 +1,8 @@
-import { SideNav } from "@/lib/components/dashboard/sidenav";
+import { SideNav } from "@/lib/components/products/sidenav";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Home"
+  title: "Home",
 };
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {

@@ -1,34 +1,46 @@
-import { CardWrapper } from "@/app/dashboard/(overview)/card-wrapper";
-import { LatestInvoices } from "@/lib/components/dashboard/latest-invoices";
-import { RevenueChart } from "@/lib/components/dashboard/revenue-chart";
-import {
-  CardsSkeleton,
-  LatestInvoicesSkeleton,
-  RevenueChartSkeleton
-} from "@/lib/components/skeletons";
+import { CreateInvoice } from "@/lib/components/products/buttons";
+import { Pagination } from "@/lib/components/products/pagination";
+import { InvoicesTable } from "@/lib/components/products/table";
+import { Search } from "@/lib/components/search";
+import { InvoicesTableSkeleton } from "@/lib/components/skeletons";
+import { fetchInvoicesPages } from "@/lib/utils/data";
 import { lusitana } from "@/lib/utils/fonts";
+import { Metadata } from "next";
 import { Suspense } from "react";
 
-const DashboardPage = () => {
+export const metadata: Metadata = {
+  title: "Products",
+};
+
+const InvoicesPage = async ({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string;
+    page?: string;
+  };
+}) => {
+  const query = searchParams?.query || "";
+  const currentPage = Number(searchParams?.page) || 1;
+
+  const totalPages = await fetchInvoicesPages(query);
+
   return (
-    <main>
-      <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-        Dashboard
-      </h1>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Suspense fallback={<CardsSkeleton />}>
-          <CardWrapper />
-        </Suspense>
+    <div className="w-full">
+      <div className="flex w-full items-center justify-between">
+        <h1 className={`${lusitana.className} text-2xl`}>Products</h1>
       </div>
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-        <Suspense fallback={<RevenueChartSkeleton />}>
-          <RevenueChart />
-        </Suspense>
-        <Suspense fallback={<LatestInvoicesSkeleton />}>
-          <LatestInvoices />
-        </Suspense>
+      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
+        <Search placeholder="Search products..." />
+        <CreateInvoice />
       </div>
-    </main>
+      <Suspense fallback={<InvoicesTableSkeleton />} key={query + currentPage}>
+        <InvoicesTable currentPage={currentPage} query={query} />
+      </Suspense>
+      <div className="mt-5 flex w-full justify-center">
+        <Pagination totalPages={totalPages} />
+      </div>
+    </div>
   );
 };
-export default DashboardPage;
+export default InvoicesPage;

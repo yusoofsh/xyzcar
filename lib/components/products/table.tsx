@@ -1,15 +1,15 @@
 import {
   DeleteInvoice,
-  UpdateInvoice
-} from "@/lib/components/invoices/buttons";
-import { InvoiceStatus } from "@/lib/components/invoices/status";
+  UpdateInvoice,
+} from "@/lib/components/products/buttons";
+import { InvoiceStatus } from "@/lib/components/products/status";
 import { formatCurrency, formatDateToLocal } from "@/lib/utils";
 import { fetchFilteredInvoices } from "@/lib/utils/data";
 import Image from "next/image";
 
 export const InvoicesTable = async ({
   query,
-  currentPage
+  currentPage,
 }: {
   query: string;
   currentPage: number;
@@ -61,19 +61,22 @@ export const InvoicesTable = async ({
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th className="px-4 py-5 font-medium sm:pl-6" scope="col">
-                  Customer
+                  ID
                 </th>
                 <th className="px-3 py-5 font-medium" scope="col">
-                  Email
+                  Merek
                 </th>
                 <th className="px-3 py-5 font-medium" scope="col">
-                  Amount
+                  Jenis
                 </th>
                 <th className="px-3 py-5 font-medium" scope="col">
-                  Date
+                  Jumlah Stok
                 </th>
                 <th className="px-3 py-5 font-medium" scope="col">
-                  Status
+                  Harga
+                </th>
+                <th className="px-3 py-5 font-medium" scope="col">
+                  Keterangan
                 </th>
                 <th className="relative py-3 pl-6 pr-3" scope="col">
                   <span className="sr-only">Edit</span>
