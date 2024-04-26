@@ -3,12 +3,11 @@ import {
   type CustomerField,
   type CustomersTable,
   type InvoiceForm,
-  type InvoicesTable,
-  type LatestInvoiceRaw,
   type Revenue,
   type User,
 } from "@/lib/utils";
 
+import { sql } from "@vercel/postgres";
 import { unstable_noStore as noStore } from "next/cache";
 
 type NullishNumber = undefined | null | number;
@@ -20,8 +19,7 @@ async function executeQuery<T>(
 ): Promise<T[]> {
   noStore();
 
-  // return (await sql<T>(query, ...params)).rows;
-  return [];
+  return (await sql<T>(query, ...params)).rows;
 }
 
 export async function fetchRevenue() {
@@ -33,17 +31,16 @@ export async function fetchRevenue() {
 }
 
 export async function fetchLatestInvoices() {
-  const latestInvoices = await executeQuery<LatestInvoiceRaw>`
-      SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
-      FROM invoices
-      JOIN customers ON invoices.customer_id = customers.id
-      ORDER BY invoices.date DESC
-      LIMIT 5`;
-
-  return latestInvoices.map((invoice) => ({
-    ...invoice,
-    amount: formatCurrency(invoice.amount),
-  }));
+  // const latestInvoices = await executeQuery<LatestInvoiceRaw>`
+  //     SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
+  //     FROM invoices
+  //     JOIN customers ON invoices.customer_id = customers.id
+  //     ORDER BY invoices.date DESC
+  //     LIMIT 5`;
+  // return latestInvoices.map((invoice) => ({
+  //   ...invoice,
+  //   amount: formatCurrency(invoice.amount),
+  // }));
 }
 
 export async function fetchCardData() {
@@ -80,26 +77,10 @@ export async function fetchFilteredInvoices(
 ) {
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
-  const invoicesData = await executeQuery<InvoicesTable>`
-    SELECT
-      invoices.id,
-      invoices.amount,
-      invoices.date,
-      invoices.status,
-      customers.name,
-      customers.email,
-      customers.image_url
-    FROM invoices
-    JOIN customers ON invoices.customer_id = customers.id
-    WHERE
-      customers.name ILIKE ${`%${query}%`} OR
-      customers.email ILIKE ${`%${query}%`} OR
-      invoices.amount::text ILIKE ${`%${query}%`} OR
-      invoices.date::text ILIKE ${`%${query}%`} OR
-      invoices.status ILIKE ${`%${query}%`}
-    ORDER BY invoices.date DESC
-    LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+  const invoicesData = await executeQuery<any>`
+  SELECT * FROM invoices
   `;
+  console.log(invoicesData, "hehe");
 
   return invoicesData;
 }
@@ -108,13 +89,6 @@ export async function fetchInvoicesPages(query: string) {
   const countData = await executeQuery<{ count: number }>`
     SELECT COUNT(*)
     FROM invoices
-    JOIN customers ON invoices.customer_id = customers.id
-    WHERE
-      customers.name ILIKE ${`%${query}%`} OR
-      customers.email ILIKE ${`%${query}%`} OR
-      invoices.amount::text ILIKE ${`%${query}%`} OR
-      invoices.date::text ILIKE ${`%${query}%`} OR
-      invoices.status ILIKE ${`%${query}%`}
   `;
 
   return countData[0] ? Math.ceil(countData[0].count / ITEMS_PER_PAGE) : 0;
